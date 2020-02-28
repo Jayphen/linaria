@@ -3,13 +3,17 @@ import dedent from 'dedent';
 import { join } from 'path';
 import stripAnsi from 'strip-ansi';
 import serializer from '../__utils__/linaria-snapshot-serializer';
+import { StrictOptions } from '../babel/types';
 
 expect.addSnapshotSerializer(serializer);
 
-const transpile = async (input: string) =>
+const transpile = async (
+  input: string,
+  opts: Partial<StrictOptions> = { evaluate: false }
+) =>
   (await babel.transformAsync(input, {
     babelrc: false,
-    presets: [[require.resolve('../babel'), { evaluate: false }]],
+    presets: [[require.resolve('../babel'), opts]],
     plugins: ['@babel/plugin-syntax-jsx'],
     filename: join(__dirname, 'app/index.js'),
   }))!;
@@ -23,6 +27,29 @@ it('transpiles styled template literal with object', async () => {
       font-size: 14px;
     \`;
     `
+  );
+
+  expect(code).toMatchSnapshot();
+  expect(metadata).toMatchSnapshot();
+});
+
+it('respects options passed in', async () => {
+  const { code, metadata } = await transpile(
+    dedent`
+    import { styled } from 'linaria/react';
+    import { css } from 'linaria';
+
+    const displayNameStyles = css\`color: red\`;
+
+    export function Comp() {
+      return <div className={displayNameStyles} />
+    }
+
+    export const Title = styled('h1')\`
+      font-size: 14px;
+    \`;
+`,
+    { evaluate: true, displayName: true }
   );
 
   expect(code).toMatchSnapshot();

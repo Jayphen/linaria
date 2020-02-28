@@ -358,6 +358,34 @@ Dependencies: NA
 
 `;
 
+exports[`respects options passed in 1`] = `
+"import { styled } from 'linaria/react';
+import { css } from 'linaria';
+const displayNameStyles = \\"displayNameStyles_dh6xni0\\";
+export function Comp() {
+  return <div className={displayNameStyles} />;
+}
+export const Title =
+/*#__PURE__*/
+styled('h1')({
+  name: \\"Title\\",
+  class: \\"Title_t1u0rrat\\"
+});"
+`;
+
+exports[`respects options passed in 2`] = `
+
+CSS:
+
+.displayNameStyles_dh6xni0 {color: red}
+.Title_t1u0rrat {
+  font-size: 14px;
+}
+
+Dependencies: NA
+
+`;
+
 exports[`supports both css and styled tags 1`] = `
 "import { css } from 'linaria';
 import { styled } from 'linaria/react';
